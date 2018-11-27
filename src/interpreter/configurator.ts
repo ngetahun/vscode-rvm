@@ -1,29 +1,42 @@
-import * as process from 'process';
+//import * as process from 'process';
 import * as os from 'os';
+import {spawn, exec} from 'child_process';
 
 interface IConfigurator {
-    findRVM(): boolean;
+    findRVM(): Promise<boolean>;
     findCurrent(): String;
     listGems(): String[];
-    updateConfig(): any;
+    updateConfig(): boolean;
     checkRVMVersion(): boolean;
     //readonly MinimumRVMSupported: String; // for now, this will be left empty
-    rubyInterpreterVersion: String;
 }
 /**
  * A configuration singleton to handle interpreter version
  * @author Natnael Getahun <connect@ngetahun.me>
  */
 export default class Configurator implements IConfigurator {
-    private mInstance: number = 0;
+    private static mInstance: Configurator;
+    private rubyInterpreterVersion: String;
+    private isFirstTimeSettingExt = true;
+
     private constructor() {
-        //readonly isFirstTimeSettingExt: boolean = true;
-        
+        this.isFirstTimeSettingExt = true;
+        this.rubyInterpreterVersion = this.findCurrent();
+        this.isFirstTimeSettingExt = false;
     }
-    findRVM(): boolean {
-        const targetMachine:String = os.type();
+
+    private getTargetMachine(): String {
+        let target = os.type();
+        if(['Darwin', 'Linux', 'Windows_NT'].indexOf(target) === -1) {
+            return 'Unknown target';
+        }
+
+        return target;
+    }
+    async findRVM(): Promise<boolean> {
+        const targetMachine:String = this.getTargetMachine();
         if(targetMachine.includes('Darwin')) { // OSX
-            //let execd = process.execArgv('rvm current');
+            let execd = await spawn('rvm', ['current'], {shell: true});
 
         }
         else if (targetMachine.includes('Linux')) { // Linux
@@ -35,18 +48,42 @@ export default class Configurator implements IConfigurator {
         return false;
     }
 
+    /**
+     * Return the current ruby version
+     * @param
+     * @return String
+     */
     findCurrent(): String {
+        let cmd = 'rvm current';
+        spawn(cmd)
         return '';
     }
 
+    /**
+     * List the gems for the current ruby 
+     * @param
+     * @return String[]
+     */
     listGems(): String[] {
         return new Array("");
     }
 
-    updateConfig(): any {
-        return;
+    /**
+     * Update hook to sync the Configurator
+     * return a boolean signifying success
+     * @param
+     * @return boolean
+     */
+    updateConfig(): boolean {
+        return false;
     }
 
+    /**
+     * A check to see if the user has the desired 
+     * rvm version
+     * @param
+     * @return boolean
+     */
     checkRVMVersion(): boolean {
         return false;
     }
@@ -56,10 +93,10 @@ export default class Configurator implements IConfigurator {
      * @param 
      * @return Configurator 
      */
-    public getConfigurator(): Configurator {
-        if (this.mInstance === 0) {
-            return new Configurator();
+    public static getConfigurator(): Configurator {
+        if (!Configurator.mInstance) {
+            Configurator.mInstance = new Configurator();
         }
-        return this;
+        return Configurator.mInstance;
     }
 }

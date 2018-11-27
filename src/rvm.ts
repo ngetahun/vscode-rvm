@@ -1,8 +1,8 @@
-import {window, StatusBarAlignment} from 'vscode';
+//import {window, StatusBarAlignment} from 'vscode';
 
 export default class InterpreterDisplay {
     constructor() {
-        this.statusBar = window.createStatusBarItem(StatusBarAlignment.Left, 150);
+        // this.statusBar = window.createStatusBarItem(StatusBarAlignment.Left, 150);
         
     }
 }
