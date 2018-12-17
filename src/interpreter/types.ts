@@ -22,7 +22,7 @@ export type GemInformation = {
     readonly name: String;
     readonly author: String;
     readonly description: String;
-    readonly version: String;
+    readonly version: FullVersionInformation;
 };
 
 // uses semantic versioning information
@@ -33,7 +33,7 @@ export type VersionInformation = {
     patch: number;
 };
 
-export type PreReleaseVersionInformation = VersionInformation & {
+export type FullVersionInformation = VersionInformation & {
     releaseIdentifier: any | String;
 };
 
