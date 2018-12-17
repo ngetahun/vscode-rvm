@@ -68,4 +68,5 @@ export interface IRBENVService extends IBaseRuby, IBaseRubyManager{
     rbenvVersion: VersionInformation;
     rbenvConfig: IConfigurator;
     currentRuby: InterpreterInformation;
+
 }
