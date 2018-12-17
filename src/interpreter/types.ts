@@ -57,16 +57,15 @@ interface IBaseRubyManager {
     listGems(): GemInformation[];
     findCurrent(): String;
 }
-export interface IRubyInterpreterService extends IBaseRuby {
-    checkVersion(): boolean;
-}
 
 export interface IRVMService extends IBaseRuby, IBaseRubyManager {
     rvmVersion: VersionInformation;
     rvmConfig: IConfigurator;
+    currentRuby: InterpreterInformation;
 }
 
 export interface IRBENVService extends IBaseRuby, IBaseRubyManager{
     rbenvVersion: VersionInformation;
     rbenvConfig: IConfigurator;
+    currentRuby: InterpreterInformation
 }
